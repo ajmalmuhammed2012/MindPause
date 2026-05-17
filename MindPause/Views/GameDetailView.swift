@@ -12,7 +12,8 @@ struct GameDetailView: View {
                 placeholderView
             }
         }
-        .navigationTitle(title)
+        .navigationTitle(route == "zen" ? "" : title)
+        .navigationBarTitleDisplayMode(.inline)
     }
     
     private var placeholderView: some View {

@@ -11,6 +11,7 @@ struct ZenTapView: View {
         static let minCircleSize: CGFloat = 92
         static let maxCircleSize: CGFloat = 280
         static let playAreaSize: CGFloat = 320
+        static let previewFrameInterval: TimeInterval = 1.0 / 30.0
     }
     
     @State private var score: Int = 0
@@ -21,40 +22,67 @@ struct ZenTapView: View {
     @State private var successHapticTrigger: Int = 0
     @State private var message = "Tap when the circle meets the ring"
     
+    private var isRunningPreview: Bool {
+        ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
+    }
+    
     var body: some View {
-        TimelineView(.animation) { timeline in
-            let progress = progress(at: timeline.date)
-            let circleSize = circleSize(for: progress)
-            let timingAccuracy = accuracy(for: progress)
+        VStack(spacing: 24) {
+            header
             
-            VStack(spacing: 24) {
-                header
-                
-                Spacer(minLength: 12)
-                
-                tapArea(circleSize: circleSize, timingAccuracy: timingAccuracy)
-                    .onTapGesture {
-                        handleTap(progress: progress)
-                    }
-                    .accessibilityLabel("Zen Tap target")
-                    .accessibilityHint("Tap when the expanding circle reaches the outer ring")
-                
-                Spacer(minLength: 12)
-                
-                Text(message)
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .frame(minHeight: 24)
-            }
-            .padding(.horizontal, 24)
-            .padding(.top, 28)
-            .padding(.bottom, 32)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(zenBackground)
-            .sensoryFeedback(.impact(weight: .light, intensity: 0.28), trigger: tapHapticTrigger)
-            .sensoryFeedback(.success, trigger: successHapticTrigger)
+            Spacer(minLength: 12)
+            
+            animatedTapArea
+            
+            Spacer(minLength: 12)
+            
+            Text(message)
+                .font(.callout)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .frame(minHeight: 24)
         }
+        .padding(.horizontal, 24)
+        .padding(.top, 28)
+        .padding(.bottom, 32)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(zenBackground)
+        .sensoryFeedback(.impact(weight: .light, intensity: 0.28), trigger: tapHapticTrigger)
+        .sensoryFeedback(.success, trigger: successHapticTrigger)
+        .onAppear {
+            roundStart = Date()
+        }
+        .onDisappear {
+            resetTransientFeedback()
+        }
+    }
+    
+    @ViewBuilder
+    private var animatedTapArea: some View {
+        if isRunningPreview {
+            TimelineView(.periodic(from: .now, by: Constants.previewFrameInterval)) { timeline in
+                tapArea(for: timeline.date)
+            }
+            .frame(width: Constants.playAreaSize, height: Constants.playAreaSize)
+        } else {
+            TimelineView(.animation) { timeline in
+                tapArea(for: timeline.date)
+            }
+            .frame(width: Constants.playAreaSize, height: Constants.playAreaSize)
+        }
+    }
+    
+    private func tapArea(for date: Date) -> some View {
+        let progress = progress(at: date)
+        let circleSize = circleSize(for: progress)
+        let timingAccuracy = accuracy(for: progress)
+        
+        return tapArea(circleSize: circleSize, timingAccuracy: timingAccuracy)
+            .onTapGesture {
+                handleTap(progress: progress)
+            }
+            .accessibilityLabel("Zen Tap target")
+            .accessibilityHint("Tap when the expanding circle reaches the outer ring")
     }
     
     private var header: some View {
@@ -180,6 +208,15 @@ struct ZenTapView: View {
     
     private func targetRingColor(for accuracy: Double) -> Color {
         accuracy > 0 ? .mint.opacity(0.45 + accuracy * 0.45) : .primary.opacity(0.18)
+    }
+    
+    private func resetTransientFeedback() {
+        var transaction = Transaction()
+        transaction.disablesAnimations = true
+        withTransaction(transaction) {
+            feedbackScale = 0.8
+            feedbackOpacity = 0
+        }
     }
     
     private func handleTap(progress: Double) {

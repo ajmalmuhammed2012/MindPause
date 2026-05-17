@@ -6,8 +6,6 @@ struct GameCardView: View {
     var icon: String
     var gradient: Color
     
-    @State private var isPressed: Bool = false
-    
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 24, style: .continuous)
@@ -73,11 +71,6 @@ struct GameCardView: View {
             .padding(20)
         }
         .contentShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-        .scaleEffect(isPressed ? 0.96 : 1)
-        .animation(.spring(response: 0.3, dampingFraction: 0.85, blendDuration: 0), value: isPressed)
-        .onLongPressGesture(minimumDuration: 0.01, pressing: { pressing in
-            withAnimation { isPressed = pressing }
-        }, perform: {})
     }
 }
 

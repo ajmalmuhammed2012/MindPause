@@ -15,8 +15,6 @@ struct HomeView: View {
         TabView(selection: $selection) {
             NavigationStack {
                 HomeContent()
-                    .navigationTitle("MindPause")
-                    .navigationBarTitleDisplayMode(.large)
             }
             .tabItem {
                 Image(systemName: "house.fill")
@@ -143,25 +141,28 @@ private struct SettingsView: View {
 }
 
 private struct Header: View {
-    @State private var appear = false
+    @State private var appear = ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Take a mindful break")
-                .font(.callout.weight(.medium))
-                .foregroundStyle(.secondary)
-                .opacity(appear ? 1 : 0)
-                .offset(y: appear ? 0 : 8)
-                .animation(.easeOut(duration: 0.6), value: appear)
-            
             Text("MindPause")
                 .font(.system(size: 42, weight: .bold, design: .rounded))
                 .foregroundStyle(.primary)
                 .opacity(appear ? 1 : 0)
                 .offset(y: appear ? 0 : 8)
                 .animation(.spring(response: 0.6, dampingFraction: 0.8), value: appear)
+            
+            Text("Take a mindful break")
+                .font(.callout.weight(.medium))
+                .foregroundStyle(.secondary)
+                .opacity(appear ? 1 : 0)
+                .offset(y: appear ? 0 : 8)
+                .animation(.easeOut(duration: 0.6), value: appear)
         }
-        .onAppear { appear = true }
+        .onAppear {
+            guard !appear else { return }
+            appear = true
+        }
     }
 }
 

@@ -57,6 +57,14 @@ Guidelines:
 - Local-only persistence if needed (e.g., simple progress or streaks) using lightweight approaches.
 - Basic navigation with a bottom tab bar and a premium Home view featuring the three games.
 
+## Performance and Preview Rules
+- Keep continuously animated SwiftUI work narrowly scoped. Do not wrap whole screens in `TimelineView(.animation)`; place timeline-driven updates around only the moving game element.
+- Xcode previews must stay lightweight and responsive. For continuous game motion in previews, use a lower-frequency timeline such as `.periodic(from:by:)` while keeping normal `.animation` timing for the real app.
+- Avoid stacking custom gestures inside `NavigationLink` unless the gesture is essential. Press effects on navigation cards should not compete with navigation taps.
+- Do not replay decorative entrance animations every time a preview or navigation stack recreates a view. Initialize preview-only state to its final visual state when needed.
+- Reset transient animation feedback on disappear for game screens so returning from Home starts cleanly.
+- Favor subtle shadows and materials, but reduce or isolate them when they are inside continuously redrawn regions.
+
 ## Coding Style Rules
 - Prefer small, composable SwiftUI views with clear inputs and minimal state.
 - Use structs for views and models; keep view models light if/when introduced.
