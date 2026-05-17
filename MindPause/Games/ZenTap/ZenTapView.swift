@@ -5,15 +5,20 @@ struct ZenTapView: View {
         static let cycleDuration: TimeInterval = 2.4
         static let targetProgress = 0.72
         static let timingWindow = 0.11
+        static let perfectWindow = 0.035
+        static let feedbackSpring = Animation.spring(response: 0.46, dampingFraction: 0.86, blendDuration: 0.06)
+        static let feedbackFade = Animation.easeOut(duration: 0.62).delay(0.06)
         static let minCircleSize: CGFloat = 92
         static let maxCircleSize: CGFloat = 280
+        static let playAreaSize: CGFloat = 320
     }
     
     @State private var score: Int = 0
     @State private var roundStart = Date()
     @State private var feedbackScale: CGFloat = 0.8
     @State private var feedbackOpacity: Double = 0
-    @State private var hapticTrigger: Int = 0
+    @State private var tapHapticTrigger: Int = 0
+    @State private var successHapticTrigger: Int = 0
     @State private var message = "Tap when the circle meets the ring"
     
     var body: some View {
@@ -22,7 +27,7 @@ struct ZenTapView: View {
             let circleSize = circleSize(for: progress)
             let timingAccuracy = accuracy(for: progress)
             
-            VStack(spacing: 28) {
+            VStack(spacing: 24) {
                 header
                 
                 Spacer(minLength: 12)
@@ -43,16 +48,18 @@ struct ZenTapView: View {
                     .frame(minHeight: 24)
             }
             .padding(.horizontal, 24)
-            .padding(.vertical, 28)
+            .padding(.top, 28)
+            .padding(.bottom, 32)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(zenBackground)
-            .sensoryFeedback(.impact(weight: .light, intensity: 0.45), trigger: hapticTrigger)
+            .sensoryFeedback(.impact(weight: .light, intensity: 0.28), trigger: tapHapticTrigger)
+            .sensoryFeedback(.success, trigger: successHapticTrigger)
         }
     }
     
     private var header: some View {
-        HStack(alignment: .firstTextBaseline) {
-            VStack(alignment: .leading, spacing: 6) {
+        HStack(alignment: .center) {
+            VStack(alignment: .leading, spacing: 5) {
                 Text("Zen Tap")
                     .font(.largeTitle.bold())
                 Text("Breathe, watch, tap")
@@ -64,12 +71,17 @@ struct ZenTapView: View {
             
             VStack(alignment: .trailing, spacing: 4) {
                 Text("Score")
-                    .font(.caption)
+                    .font(.caption.weight(.medium))
                     .foregroundStyle(.secondary)
                 Text("\(score)")
                     .font(.title.bold())
+                    .monospacedDigit()
                     .contentTransition(.numericText())
+                    .animation(Constants.feedbackSpring, value: score)
             }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
+            .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
             .accessibilityElement(children: .combine)
         }
     }
@@ -77,29 +89,40 @@ struct ZenTapView: View {
     private func tapArea(circleSize: CGFloat, timingAccuracy: Double) -> some View {
         ZStack {
             Circle()
-                .stroke(.primary.opacity(0.12), lineWidth: 2)
+                .fill(playAreaGradient)
+                .frame(width: Constants.playAreaSize, height: Constants.playAreaSize)
+                .shadow(color: Color.blue.opacity(0.18), radius: 34, x: 0, y: 18)
+            
+            Circle()
+                .stroke(.primary.opacity(0.08), lineWidth: 1)
                 .frame(width: Constants.maxCircleSize, height: Constants.maxCircleSize)
             
             Circle()
-                .stroke(targetRingColor(for: timingAccuracy), lineWidth: 3)
+                .stroke(targetRingColor(for: timingAccuracy), lineWidth: 2.5)
                 .frame(width: Constants.maxCircleSize * 0.72, height: Constants.maxCircleSize * 0.72)
-                .shadow(color: targetRingColor(for: timingAccuracy).opacity(0.28), radius: 14)
+                .shadow(color: targetRingColor(for: timingAccuracy).opacity(0.32), radius: 18)
             
             Circle()
                 .fill(circleGradient)
+                .overlay(
+                    Circle()
+                        .stroke(.white.opacity(0.18), lineWidth: 1)
+                )
                 .frame(width: circleSize, height: circleSize)
-                .shadow(color: Color.blue.opacity(0.24), radius: 24, x: 0, y: 12)
+                .shadow(color: Color.mint.opacity(0.20), radius: 18, x: 0, y: 8)
+                .shadow(color: Color.blue.opacity(0.18), radius: 28, x: 0, y: 18)
             
             Circle()
-                .stroke(Color.accentColor.opacity(feedbackOpacity), lineWidth: 5)
-                .frame(width: Constants.maxCircleSize * feedbackScale, height: Constants.maxCircleSize * feedbackScale)
+                .stroke(Color.accentColor.opacity(feedbackOpacity), lineWidth: 3)
+                .frame(width: Constants.maxCircleSize, height: Constants.maxCircleSize)
+                .scaleEffect(feedbackScale)
             
             Image(systemName: "hand.tap.fill")
-                .font(.system(size: 30, weight: .semibold))
-                .foregroundStyle(.white.opacity(0.92))
-                .shadow(color: .black.opacity(0.22), radius: 4, x: 0, y: 2)
+                .font(.system(size: 28, weight: .semibold))
+                .foregroundStyle(.white.opacity(0.9))
+                .shadow(color: .black.opacity(0.24), radius: 5, x: 0, y: 2)
         }
-        .frame(width: Constants.maxCircleSize, height: Constants.maxCircleSize)
+        .frame(width: Constants.playAreaSize, height: Constants.playAreaSize)
         .contentShape(Circle())
     }
     
@@ -107,8 +130,8 @@ struct ZenTapView: View {
         LinearGradient(
             colors: [
                 Color(.systemBackground),
-                Color.accentColor.opacity(0.10),
-                Color.blue.opacity(0.08)
+                Color.blue.opacity(0.09),
+                Color.mint.opacity(0.07)
             ],
             startPoint: .topLeading,
             endPoint: .bottomTrailing
@@ -116,11 +139,24 @@ struct ZenTapView: View {
         .ignoresSafeArea()
     }
     
+    private var playAreaGradient: LinearGradient {
+        LinearGradient(
+            colors: [
+                Color(.secondarySystemBackground).opacity(0.72),
+                Color.blue.opacity(0.10),
+                Color.mint.opacity(0.08)
+            ],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
+    
     private var circleGradient: LinearGradient {
         LinearGradient(
             colors: [
-                Color.blue.opacity(0.82),
-                Color.mint.opacity(0.70)
+                Color.blue.opacity(0.88),
+                Color.cyan.opacity(0.76),
+                Color.mint.opacity(0.66)
             ],
             startPoint: .topLeading,
             endPoint: .bottomTrailing
@@ -133,7 +169,8 @@ struct ZenTapView: View {
     }
     
     private func circleSize(for progress: Double) -> CGFloat {
-        Constants.minCircleSize + (Constants.maxCircleSize - Constants.minCircleSize) * progress
+        let easedProgress = progress * progress * (3 - 2 * progress)
+        return Constants.minCircleSize + (Constants.maxCircleSize - Constants.minCircleSize) * easedProgress
     }
     
     private func accuracy(for progress: Double) -> Double {
@@ -146,24 +183,36 @@ struct ZenTapView: View {
     }
     
     private func handleTap(progress: Double) {
-        let isOnBeat = accuracy(for: progress) > 0
+        let tapAccuracy = accuracy(for: progress)
+        let isOnBeat = tapAccuracy > 0
+        let isPerfectTap = abs(progress - Constants.targetProgress) <= Constants.perfectWindow
         
-        if isOnBeat {
+        if isPerfectTap {
+            score += 1
+            message = "Perfect"
+            successHapticTrigger += 1
+        } else if isOnBeat {
             score += 1
             message = "Nice timing"
         } else {
             message = "Let it expand a little more"
         }
         
-        hapticTrigger += 1
+        tapHapticTrigger += 1
         roundStart = Date()
         
-        withAnimation(.spring(response: 0.32, dampingFraction: 0.72)) {
-            feedbackScale = isOnBeat ? 0.82 : 0.58
-            feedbackOpacity = isOnBeat ? 0.9 : 0.36
+        var resetTransaction = Transaction()
+        resetTransaction.disablesAnimations = true
+        withTransaction(resetTransaction) {
+            feedbackScale = isOnBeat ? 0.58 : 0.46
+            feedbackOpacity = isOnBeat ? 0.72 : 0.28
         }
         
-        withAnimation(.easeOut(duration: 0.45).delay(0.08)) {
+        withAnimation(Constants.feedbackSpring) {
+            feedbackScale = isPerfectTap ? 1.04 : isOnBeat ? 0.94 : 0.72
+        }
+        
+        withAnimation(Constants.feedbackFade) {
             feedbackOpacity = 0
         }
     }

@@ -6,14 +6,42 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A18385DB2FBA09CC0097ECC9 /* MindPauseApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18385CC2FBA09CC0097ECC9 /* MindPauseApp.swift */; };
+		A18385DC2FBA09CC0097ECC9 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18385D62FBA09CC0097ECC9 /* HomeView.swift */; };
+		A18385DD2FBA09CC0097ECC9 /* GameCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18385D02FBA09CC0097ECC9 /* GameCardView.swift */; };
+		A18385DE2FBA09CC0097ECC9 /* GameDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18385D52FBA09CC0097ECC9 /* GameDetailView.swift */; };
+		A18385DF2FBA09CC0097ECC9 /* AI_RULES.md in Resources */ = {isa = PBXBuildFile; fileRef = A18385D82FBA09CC0097ECC9 /* AI_RULES.md */; };
+		A18385E02FBA09CC0097ECC9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A18385CE2FBA09CC0097ECC9 /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		A183858D2FB9F9D30097ECC9 /* MindPause.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MindPause.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A18385CC2FBA09CC0097ECC9 /* MindPauseApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MindPauseApp.swift; sourceTree = "<group>"; };
+		A18385CE2FBA09CC0097ECC9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A18385D02FBA09CC0097ECC9 /* GameCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCardView.swift; sourceTree = "<group>"; };
+		A18385D52FBA09CC0097ECC9 /* GameDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameDetailView.swift; sourceTree = "<group>"; };
+		A18385D62FBA09CC0097ECC9 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		A18385D82FBA09CC0097ECC9 /* AI_RULES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = AI_RULES.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A18385E62FBA0CB50097ECC9 /* Exceptions for "ZenTap" folder in "MindPause" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ZenTap.swift,
+			);
+			target = A183858C2FB9F9D30097ECC9 /* MindPause */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		A183858F2FB9F9D30097ECC9 /* MindPause */ = {
+		A18385E22FBA0C690097ECC9 /* ZenTap */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = MindPause;
+			exceptions = (
+				A18385E62FBA0CB50097ECC9 /* Exceptions for "ZenTap" folder in "MindPause" target */,
+			);
+			path = ZenTap;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,7 +60,7 @@
 		A18385842FB9F9D30097ECC9 = {
 			isa = PBXGroup;
 			children = (
-				A183858F2FB9F9D30097ECC9 /* MindPause */,
+				A18385DA2FBA09CC0097ECC9 /* MindPause */,
 				A183858E2FB9F9D30097ECC9 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -43,6 +71,76 @@
 				A183858D2FB9F9D30097ECC9 /* MindPause.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A18385CD2FBA09CC0097ECC9 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				A18385CC2FBA09CC0097ECC9 /* MindPauseApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		A18385CF2FBA09CC0097ECC9 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				A18385CE2FBA09CC0097ECC9 /* Assets.xcassets */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		A18385D12FBA09CC0097ECC9 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				A18385D02FBA09CC0097ECC9 /* GameCardView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		A18385D22FBA09CC0097ECC9 /* Games */ = {
+			isa = PBXGroup;
+			children = (
+				A18385E22FBA0C690097ECC9 /* ZenTap */,
+			);
+			path = Games;
+			sourceTree = "<group>";
+		};
+		A18385D32FBA09CC0097ECC9 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A18385D42FBA09CC0097ECC9 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A18385D72FBA09CC0097ECC9 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A18385D52FBA09CC0097ECC9 /* GameDetailView.swift */,
+				A18385D62FBA09CC0097ECC9 /* HomeView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A18385DA2FBA09CC0097ECC9 /* MindPause */ = {
+			isa = PBXGroup;
+			children = (
+				A18385CD2FBA09CC0097ECC9 /* App */,
+				A18385CF2FBA09CC0097ECC9 /* Assets */,
+				A18385D12FBA09CC0097ECC9 /* Components */,
+				A18385D22FBA09CC0097ECC9 /* Games */,
+				A18385D32FBA09CC0097ECC9 /* Models */,
+				A18385D42FBA09CC0097ECC9 /* Services */,
+				A18385D72FBA09CC0097ECC9 /* Views */,
+				A18385D82FBA09CC0097ECC9 /* AI_RULES.md */,
+			);
+			path = MindPause;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -61,7 +159,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				A183858F2FB9F9D30097ECC9 /* MindPause */,
+				A18385E22FBA0C690097ECC9 /* ZenTap */,
 			);
 			name = MindPause;
 			packageProductDependencies = (
@@ -109,6 +207,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A18385DF2FBA09CC0097ECC9 /* AI_RULES.md in Resources */,
+				A18385E02FBA09CC0097ECC9 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +219,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A18385DB2FBA09CC0097ECC9 /* MindPauseApp.swift in Sources */,
+				A18385DC2FBA09CC0097ECC9 /* HomeView.swift in Sources */,
+				A18385DD2FBA09CC0097ECC9 /* GameCardView.swift in Sources */,
+				A18385DE2FBA09CC0097ECC9 /* GameDetailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
