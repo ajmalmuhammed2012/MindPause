@@ -1,0 +1,21 @@
+# Xcode
+DerivedData/
+build/
+
+# User settings
+*.xcuserstate
+xcuserdata/
+
+# macOS
+.DS_Store
+
+# Swift Package Manager
+.swiftpm/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+
+# App packaging
+*.ipa
